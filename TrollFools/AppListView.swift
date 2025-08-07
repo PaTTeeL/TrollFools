@@ -239,12 +239,13 @@ struct AppListView: View {
         }
         .animation(.easeOut, value: combines(
             appList.isRebuildNeeded,
-            appList.activeScope,
+            //appList.activeScope,
             appList.filter,
             appList.unsupportedCount,
             shouldShowAdvertisement
         ))
         .listStyle(.insetGrouped)
+        .padding(.top, UIDevice.current.hasNotch ? 0 : 10)
         .navigationTitle(appList.isSelectorMode ?
             NSLocalizedString("Select Application to Inject", comment: "") :
             NSLocalizedString("TrollFools", comment: "")
@@ -509,6 +510,7 @@ struct AppListView: View {
             Text(content)
                 .font(.footnote)
                 .padding(.horizontal, 16)
+                .padding(.top, 3)
         }
     }
 }
@@ -516,4 +518,14 @@ struct AppListView: View {
 struct URLIdentifiable: Identifiable {
     let url: URL
     var id: String { url.absoluteString }
+}
+
+extension UIDevice {
+    var hasNotch: Bool {
+        guard #available(iOS 11.0, *), 
+              let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow }) else {
+            return false
+        }
+        return window.safeAreaInsets.top > 20
+    }
 }
