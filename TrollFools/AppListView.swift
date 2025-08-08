@@ -201,6 +201,8 @@ struct AppListView: View {
                 appList.activeScope = Scope(rawValue: $0) ?? .all
             }
             .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17, .v18)) { viewController in
+                viewController.edgesForExtendedLayout = []
+
                 if searchViewModel.searchController == nil {
                     viewController.navigationItem.hidesSearchBarWhenScrolling = false
                     viewController.navigationItem.searchController = {
