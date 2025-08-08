@@ -239,13 +239,13 @@ struct AppListView: View {
         }
         .animation(.easeOut, value: combines(
             appList.isRebuildNeeded,
-            //appList.activeScope,
+            appList.activeScope,
             appList.filter,
             appList.unsupportedCount,
             shouldShowAdvertisement
         ))
         .listStyle(.insetGrouped)
-        .padding(.top, UIDevice.current.hasNotch ? 0 : 10)
+        //.padding(.top, UIDevice.current.hasNotch ? 0 : 10)
         .navigationTitle(appList.isSelectorMode ?
             NSLocalizedString("Select Application to Inject", comment: "") :
             NSLocalizedString("TrollFools", comment: "")
@@ -510,7 +510,7 @@ struct AppListView: View {
             Text(content)
                 .font(.footnote)
                 .padding(.horizontal, 16)
-                .padding(.top, 3)
+                //.padding(.top, 3)
         }
     }
 }
