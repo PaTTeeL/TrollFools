@@ -55,6 +55,16 @@ extension AppListSearchModel: UISearchBarDelegate, UISearchResultsUpdating {
 
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         forwardSearchBarDelegate?.searchBarCancelButtonClicked?(searchBar)
+
+        DispatchQueue.main.async {
+            guard let navigationItem = self.searchController?.navigationItem else { return }
+
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithDefaultBackground()
+
+            navigationItem.standardAppearance = appearance
+            navigationItem.scrollEdgeAppearance = appearance
+        }
     }
 
     func searchBarResultsListButtonClicked(_ searchBar: UISearchBar) {

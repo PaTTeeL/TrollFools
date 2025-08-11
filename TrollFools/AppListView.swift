@@ -202,20 +202,11 @@ struct AppListView: View {
             }
             .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17, .v18)) { viewController in
                 if searchViewModel.searchController == nil {
+                    let searchController = UISearchController(searchResultsController: nil)
+                    setupSearchBar(searchController: searchController)
+                    searchViewModel.searchController = searchController
+                    viewController.navigationItem.searchController = searchController
                     viewController.navigationItem.hidesSearchBarWhenScrolling = false
-                    viewController.navigationItem.searchController = {
-                        let searchController = UISearchController(searchResultsController: nil)
-                        searchController.searchResultsUpdater = searchViewModel
-                        searchController.obscuresBackgroundDuringPresentation = false
-                        searchController.hidesNavigationBarDuringPresentation = true
-                        searchController.automaticallyShowsScopeBar = false
-                        if #available(iOS 16, *) {
-                            searchController.scopeBarActivation = .manual
-                        }
-                        setupSearchBar(searchController: searchController)
-                        return searchController
-                    }()
-                    searchViewModel.searchController = viewController.navigationItem.searchController
                 }
             }
     }
@@ -490,6 +481,12 @@ struct AppListView: View {
         searchController.searchBar.scopeButtonTitles = Scope.allCases.map { $0.localizedShortName }
         searchController.searchBar.autocapitalizationType = .none
         searchController.searchBar.autocorrectionType = .no
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = true
+
+        if #available(iOS 16, *) {
+            searchController.scopeBarActivation = .manual
+        }
 
         reloadSearchBarPlaceholder(searchController.searchBar, showPatchedOnly: appList.filter.showPatchedOnly)
     }
@@ -516,4 +513,15 @@ struct AppListView: View {
 struct URLIdentifiable: Identifiable {
     let url: URL
     var id: String { url.absoluteString }
+}
+
+private extension UIView {
+    func findViewController() -> UIViewController? {
+        var responder: UIResponder? = self
+        while let next = responder?.next {
+            if let vc = next as? UIViewController { return vc }
+            responder = next
+        }
+        return nil
+    }
 }
