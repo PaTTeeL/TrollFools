@@ -33,6 +33,9 @@ struct AppListView: View {
     @AppStorage("isWarningHidden")
     var isWarningHidden: Bool = false
 
+    @AppStorage("isLandscape")
+    var isLandscape: Bool = false
+
     var shouldShowAdvertisement: Bool {
         !isAdvertisementHidden &&
             !appList.filter.isSearching &&
@@ -261,6 +264,19 @@ struct AppListView: View {
         )
         .navigationBarTitleDisplayMode((AppListModel.isLegacyDevice || appList.isSelectorMode) ? .inline : .automatic)
         .toolbar {
+            ToolbarItem(placement: .navigationBarLeading) {
+                Button {
+                    toggleOrientation()
+                } label: {
+                    Image(systemName: isLandscape
+                        ? "iphone"
+                        : "iphone.landscape")
+                        .imageScale(.large)
+                }
+                .accessibilityLabel(isLandscape ? 
+                    NSLocalizedString("Switch to Portrait", comment: "") : 
+                    NSLocalizedString("Switch to Landscape", comment: ""))
+            }
             ToolbarItem(placement: .principal) {
                 if appList.isSelectorMode, let selectorURL = appList.selectorURL {
                     VStack {
@@ -504,6 +520,27 @@ struct AppListView: View {
             Text(content)
                 .font(.footnote)
                 .padding(.horizontal, 16)
+        }
+    }
+
+    // MARK: - Orientation Management
+    private func toggleOrientation() {
+        isLandscape.toggle()
+
+        // 强制更新方向
+        if #available(iOS 16.0, *) {
+            guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene else { return }
+            let orientation: UIInterfaceOrientationMask = isLandscape ? .landscape : .portrait
+            let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(interfaceOrientations: orientation)
+            windowScene.requestGeometryUpdate(geometryPreferences)
+        } else {
+            let value = isLandscape ? UIInterfaceOrientation.landscapeRight.rawValue : UIInterfaceOrientation.portrait.rawValue
+            UIDevice.current.setValue(value, forKey: "orientation")
+        }
+
+        // 延迟触发旋转以确保生效
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+            UIViewController.attemptRotationToDeviceOrientation()
         }
     }
 }

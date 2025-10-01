@@ -7,8 +7,19 @@
 
 import SwiftUI
 
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(_ application: UIApplication, supportedInterfaceOrientationsFor window: UIWindow?) -> UIInterfaceOrientationMask {
+        let isLandscape = UserDefaults.standard.bool(forKey: "isLandscape")
+        // .landscape 允许左右两个横屏方向自动切换
+        // .portrait 只锁定竖屏
+        return isLandscape ? .landscape : .portrait
+    }
+}
+
 @main
 struct TrollFoolsApp: SwiftUI.App {
+
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     @AppStorage("isDisclaimerHiddenV2")
     var isDisclaimerHidden: Bool = false
