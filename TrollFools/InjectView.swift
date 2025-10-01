@@ -14,7 +14,7 @@ struct InjectView: View {
     let app: App
     let urlList: [URL]
 
-    @State var injectResult: Result<URL?, Error>?
+    @State var injectResult: (result: Result<URL?, Error>, timestamp: Date)?
     @StateObject fileprivate var viewControllerHost = ViewControllerHost()
 
     @AppStorage var useWeakReference: Bool
@@ -48,10 +48,11 @@ struct InjectView: View {
     var bodyContent: some View {
         VStack {
             if let injectResult {
-                switch injectResult {
+                switch injectResult.result {
                 case let .success(url):
                     SuccessView(
                         title: NSLocalizedString("Completed", comment: ""),
+                        timestamp: injectResult.timestamp,
                         logFileURL: url
                     )
                     .onAppear {
@@ -60,6 +61,7 @@ struct InjectView: View {
                 case let .failure(error):
                     FailureView(
                         title: NSLocalizedString("Failed", comment: ""),
+                        timestamp: injectResult.timestamp,
                         error: error
                     )
                     .onAppear {
@@ -94,11 +96,13 @@ struct InjectView: View {
             viewControllerHost.viewController = viewController
         }
         .onAppear {
+            guard injectResult == nil else { return }
+
             DispatchQueue.global(qos: .userInitiated).async {
                 let result = inject()
 
                 DispatchQueue.main.async {
-                    injectResult = result
+                    injectResult = (result: result, timestamp: Date())
                     app.reload()
                     viewControllerHost.viewController?.navigationController?
                         .view.isUserInteractionEnabled = true

@@ -21,6 +21,7 @@ struct EjectListView: View {
     @State var isExportingAll = false
     @State var isErrorOccurred = false
     @State var lastError: Error?
+    @State var lastErrorTimestamp: Date?
 
     @State var isWarningPresented = false
 
@@ -190,6 +191,7 @@ struct EjectListView: View {
         .background(NavigationLink(isActive: $isErrorOccurred) {
             FailureView(
                 title: NSLocalizedString("Error", comment: ""),
+                timestamp: lastErrorTimestamp ?? Date(),
                 error: lastError
             )
         } label: { })
@@ -367,6 +369,7 @@ struct EjectListView: View {
             let nsErr = NSError(domain: Constants.gErrorDomain, code: 0, userInfo: userInfo)
 
             lastError = nsErr
+            lastErrorTimestamp = Date()
             isErrorOccurred = true
         }
     }
@@ -414,6 +417,7 @@ struct EjectListView: View {
             let nsErr = NSError(domain: Constants.gErrorDomain, code: 0, userInfo: userInfo)
 
             lastError = nsErr
+            lastErrorTimestamp = Date()
             isErrorOccurred = true
         }
     }
@@ -481,12 +485,14 @@ struct EjectListView: View {
                         let nsErr = NSError(domain: Constants.gErrorDomain, code: 0, userInfo: userInfo)
 
                         lastError = nsErr
+                        lastErrorTimestamp = Date()
                         isErrorOccurred = true
                     }
                 }
             }
         } catch {
             lastError = error
+            lastErrorTimestamp = Date()
             isErrorOccurred = true
         }
     }
@@ -554,12 +560,14 @@ struct EjectListView: View {
                         let nsErr = NSError(domain: Constants.gErrorDomain, code: 0, userInfo: userInfo)
 
                         lastError = nsErr
+                        lastErrorTimestamp = Date()
                         isErrorOccurred = true
                     }
                 }
             }
         } catch {
             lastError = error
+            lastErrorTimestamp = Date()
             isErrorOccurred = true
         }
     }
@@ -587,6 +595,7 @@ struct EjectListView: View {
                     DDLogError("\(error)", ddlog: InjectorV3.main.logger)
 
                     lastError = error
+                    lastErrorTimestamp = Date()
                     isErrorOccurred = true
                 }
             }

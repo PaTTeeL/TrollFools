@@ -120,6 +120,7 @@ struct OptionView: View {
                     case let .failure(error):
                         FailureView(
                             title: NSLocalizedString("Error", comment: ""),
+                            timestamp: Date(),
                             error: error
                         )
                     }

@@ -10,6 +10,7 @@ import SwiftUI
 struct SuccessView: View {
 
     let title: String
+    let timestamp: Date
     let logFileURL: URL?
 
     @State private var isLogsPresented = false
@@ -23,6 +24,10 @@ struct SuccessView: View {
             Text(title)
                 .font(.title)
                 .bold()
+            
+            Text(gDateFormatter.string(from: timestamp))
+                .font(.footnote)
+                .foregroundColor(.secondary)
 
             if logFileURL != nil {
                 Button {
@@ -46,6 +51,7 @@ struct SuccessView: View {
 #Preview {
     SuccessView(
         title: "Hello, World!",
+        timestamp: Date(),
         logFileURL: nil
     )
 }

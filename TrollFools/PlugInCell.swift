@@ -8,10 +8,10 @@
 import QuickLook
 import SwiftUI
 
-private let gDateFormatter: DateFormatter = {
+let gDateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateStyle = .medium
-    formatter.timeStyle = .short
+    formatter.timeStyle = .medium
     return formatter
 }()
 

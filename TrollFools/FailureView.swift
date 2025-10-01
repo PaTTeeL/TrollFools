@@ -10,6 +10,7 @@ import SwiftUI
 struct FailureView: View {
 
     let title: String
+    let timestamp: Date
     let error: Error?
 
     var logFileURL: URL? {
@@ -27,6 +28,10 @@ struct FailureView: View {
             Text(title)
                 .font(.title)
                 .bold()
+            
+            Text(gDateFormatter.string(from: timestamp))
+                .font(.footnote)
+                .foregroundColor(.secondary)
 
             if let error {
                 Text(error.localizedDescription)
@@ -55,6 +60,7 @@ struct FailureView: View {
 #Preview {
     FailureView(
         title: "Hello, World!",
+        timestamp: Date(),
         error: nil
     )
 }
