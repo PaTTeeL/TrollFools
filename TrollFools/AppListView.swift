@@ -177,6 +177,20 @@ struct AppListView: View {
                 PlaceholderView()
             }
         }
+        .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17, .v18)) { viewController in
+            guard let navController = viewController.navigationController else { return }
+
+            NotificationCenter.default.addObserver(
+                forName: UIDevice.orientationDidChangeNotification,
+                object: nil,
+                queue: .main
+            ) { _ in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                    navController.navigationBar.setNeedsLayout()
+                    navController.navigationBar.layoutIfNeeded()
+                }
+            }
+        }
     }
 
     @ViewBuilder
