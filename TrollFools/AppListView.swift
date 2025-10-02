@@ -548,8 +548,17 @@ struct AppListView: View {
             let geometryPreferences = UIWindowScene.GeometryPreferences.iOS(interfaceOrientations: orientation)
             windowScene.requestGeometryUpdate(geometryPreferences)
         } else {
-            let value = isLandscape ? UIInterfaceOrientation.landscapeRight.rawValue : UIInterfaceOrientation.portrait.rawValue
-            UIDevice.current.setValue(value, forKey: "orientation")
+            let orientation: UIInterfaceOrientation
+            if isLandscape {
+                if UIDevice.current.orientation == .landscapeLeft {
+                    orientation = .landscapeLeft
+                } else {
+                    orientation = .landscapeRight
+                }
+            } else {
+                orientation = .portrait
+            }
+            UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
         }
 
         // 延迟触发旋转以确保生效
